@@ -125,6 +125,14 @@ Hadoop安装模式：
   }
   ```
 
+- 多输入：
+
+  - MultipleInputs 允许为每条输入路径指定 InputFormat 和 Mapper
+
+  ```java
+  MultipleInputs.addInputPath(job, InputPath, TextInputFormat.class, Mapper.class);
+  ```
+
 ##### Mapper
 
 - 对输入的 key, value 处理，转换成新的 key, value 输出
@@ -227,17 +235,232 @@ Hadoop安装模式：
   
       return job.waitForCompletion(true) ? 0 : 1;	// 等待作业完成退出
   }
+  
   ```
+
+- 多输出：
+
+  ```java
+  	public static class Reducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+  		private IntWritable result = new IntWritable();
+  		private MultipleOutputs<Text, IntWritable> multipleOutputs;
+  
+  		@Override
+  		protected void setup(Context context) throws IOException, InterruptedException {
+  			// setup方法中构造一个 MultipleOutputs的实例
+  			multipleOutputs = new MultipleOutputs<Text, IntWritable>(context);
+  		}
+  
+  		protected void reduce(Text key, Iterable<IntWritable> values, Context context)
+  				throws IOException, InterruptedException {
+  			// ...
+  		}
+  
+  		@Override
+  		protected void cleanup(Context context) throws IOException, InterruptedException {
+  			multipleOutputs.close();
+  		}
+  	}
+  
+  ```
+
+#### 数据压缩
+
+- 目的：
+
+  - 降低磁盘IO
+  - 降低网络IO
+  - 降低存储成本
+
+- 常用压缩格式：
+
+  |  格式  | 压缩率 |  速度  | 是否hadoop自带 | linux命令 | 换成压缩格式后原应用程序是否要修改 |
+  | :----: | :----: | :----: | :------------: | :-------: | :--------------------------------: |
+  |  gzip  |  很高  | 比较快 |  是，直接使用  |    有     |     和文本处理一样，不需要修改     |
+  | snappy | 比较高 |  很快  |  否，需要安装  |   没有    |     和文本处理一样，不需要修改     |
+
+  （ gzip常用于不经常分析的历史数据 ）
+
+### MapReduce单元测试 
+
+MRUnit 框架是Cloudera公司专为Hadoop MapReduce写的单元测试框架。MRUnit针对不同测试对象使用不同的Driver：
+
+- MapDriver：针对单独的Map测试
+- ReduceDriver：针对单独的Reduce测试
+- MapReduceDriver：将map和reduce串起来测试
 
 ### 常用算法
 
 #### 平均值
 
+```java
+public static class AverageCountMapper extends Mapper<LongWritable, Text, Text, Text> {
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        String line = value.toString();
+        String[] parameters = line.split("\\s+");
+        context.write(new Text(parameters[0]), new Text(parameters[1]));
+    }
+}
+
+public static class AverageCountCombiner extends Reducer<Text, Text, Text, Text> {
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        Double sum = 0.00;
+        int count = 0;
+        for (Text item : values) {
+            sum = sum + Double.parseDouble(item.toString());
+            count++;
+        }
+        context.write(new Text(key), new Text(sum + "-" + count));
+    }
+}
+
+public static class AverageCountReducer extends Reducer<Text, Text, Text, Text> {
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        Double sum = 0.00;
+        int count = 0;
+        for (Text t : values) {
+            String[] str = t.toString().split("-");
+            sum += Double.parseDouble(str[0]);
+            count += Integer.parseInt(str[1]);
+        }
+        double average = sum / count;
+        context.write(new Text(key), new Text(String.valueOf(average)));
+    }
+}
+```
+
 #### TopN
+
+```java
+public static final int k = 3;
+
+public static class TopNMapper extends Mapper<LongWritable, Text, NullWritable, Text> {
+    private TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+    
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        String line = value.toString();
+        String[] parameters = line.split("\\s+");
+        Integer clicks = Integer.parseInt(parameters[1]);
+        map.put(clicks, value.toString());
+        if (map.size() > k) {
+            map.remove(map.firstKey());
+        }
+    }
+
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        for (String text : map.values()) {
+            if (text.toString() != null && !text.toString().equals("")) {
+                context.write(NullWritable.get(), new Text(text));
+            }
+        }
+    }
+}
+
+public static class TopNReducer extends Reducer<NullWritable, Text, NullWritable, Text> {
+    private TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        for (Text item : values) {
+            String value[] = item.toString().split("\t");
+            Integer clicks = Integer.parseInt(value[1]);
+            map.put(clicks, item.toString());
+            if (map.size() > k) {
+                map.remove(map.firstKey());
+            }
+        }
+        for (String text : map.values()) {
+            context.write(NullWritable.get(), new Text(text));
+        }
+    }
+}
+
+```
 
 #### 最大值
 
+```java
+public static class MaxNumMapper extends Mapper<LongWritable, Text, Text, Text> {
+
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        String line = value.toString();
+        String[] parameters = line.split("\\s+");
+        String urlId = parameters[0];
+        context.write(new Text(urlId), new Text(String.valueOf(parameters[1])));
+    }
+}
+
+public static class MaxNumReducer extends Reducer<Text, Text, Text, Text> {
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        long max = 0L;
+        for (Text text : values) {
+            if (Long.parseLong(text.toString()) > max) {
+                max = Long.parseLong(text.toString());
+            }
+        }
+        context.write(key, new Text(String.valueOf(max)));
+    }
+}
+
+```
+
 #### Map Join
+
+Map Join 最快
+
+```java
+public static class MapJoinMapper extends Mapper<Object, Text, Text, Text> {
+    private HashMap<String, String> stationMap = new HashMap<String, String>();
+    private String TemperatureStr;
+    private String[] TemperatureItems;
+    private String station; // 不包括stationId
+    private Text outPutKey = new Text();
+    private Text outPutValue = new Text();
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+        BufferedReader br;
+        String station;
+        // 把缓存的小文件读取出来并缓存到hashmap中
+        Path[] paths = context.getLocalCacheFiles();
+        for (Path path : paths) {
+            String pathStr = path.toString();
+            if (pathStr.endsWith("Station.txt")) {
+                br = new BufferedReader(new FileReader(pathStr));
+                while (null != (station = br.readLine())) {
+                    String[] stationItems = station.split("\\s+");
+                    if (stationItems.length == 3) {// 去掉脏数据
+                        // 缓存到一个map
+                        stationMap.put(stationItems[0], stationItems[1] + "\t" + stationItems[2]);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        TemperatureStr = value.toString();
+        // 过滤脏数据
+        if (TemperatureStr.equals("")) {
+            return;
+        }
+        TemperatureItems = TemperatureStr.split("\\s+");
+        if (TemperatureItems.length != 3) {
+            return;
+        }
+
+        // 判断当前记录的joinkey字段是否在stationMap中
+        station = stationMap.get(TemperatureItems[0]);
+        if (null != station) {// 如果缓存中存在对应的joinkey，那就做连接操作并输出
+            outPutKey.set(TemperatureItems[0]);
+            outPutValue.set(station + "\t" + TemperatureItems[1] + "\t" + TemperatureItems[2]);
+            context.write(outPutKey, outPutValue);
+        }
+    }
+}
+```
+
+#### Semi Join
 
 #### Reduce Join
 

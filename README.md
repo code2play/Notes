@@ -1,8 +1,12 @@
-# Machine Learning Notes
+# 学习笔记
 
-## References
+- 软件工程
+- Deep Learning
+- Hadoop
 
-- Deep Learning Specialization (Andrew Ng)
-- CS231n
-- CS224n
-- CS294-112
+## TODO
+
+- [ ] Machine Learning
+- [ ] 计网
+- [ ] 操作系统
+- [ ] 算法

@@ -6,9 +6,18 @@
 
 大数据技术主要应用场景：
 
-- 搜索引擎，为大规模的网页快速建立索引。
-- 大数据存储，利用分布式存储能力，建立数据备份、数据仓库等。
-- 大数据处理，利用分布式处理能力，例如数据挖掘、数据分析等。
+- 搜索引擎，为大规模的网页快速建立索引
+- 大数据存储，利用分布式存储能力，建立数据备份、数据仓库等
+- 大数据处理，利用分布式处理能力，例如数据挖掘、数据分析等
+- 批量处理 (Batch Processing)
+  - 侧重于处理海量数据，处理速度可忍受，时间可能在数十分钟到数小时
+  - MR
+- 历史数据交互式查询 (Interactive Query)
+  - 时间在数秒到数十分钟之间
+  - Presto
+- 实时流数据处理 (Streaming Processing)
+  - 通常在数十毫秒到数秒之间
+  - Storm
 
 **Hadoop** 框架的核心是 ***HDFS, MapReduce, Yarn***
 - **HDFS** 是分布式文件系统，提供海量数据的存储
@@ -741,7 +750,7 @@ public static class SemiJoinReducer extends Reducer<Text, Text, Text, Text> {
 ### 运行机制
 
 - 和HDFS一样，MapReduce也是采用Master/Slave的架构
-- MapReduce1包含4个部分：Client, JobTracker, TaskTracker和Task
+- MapReduce包含4个部分：Client, JobTracker, TaskTracker和Task
 - Client:
   - 将JAR文件、配置参数Configuration、计算分片、 Distributed Cache 文件存储在HDFS
   - 向 JobTracker 申请JobId
@@ -945,7 +954,8 @@ HDFS 采用Master/Slave的架构来存储数据，该架构主要由四个部分
 - 关闭正在运行的 Job： mapred job -kill job_2732108212572_0001 
 - 检查 HDFS 块状态，查看是否损坏： hdfs fsck / 
 - 检查 HDFS 块状态，并删除损坏的块： hdfs fsck / -delete
-- 检查 HDFS 状态，包括 DataNode 信息： hdfs dfsadmin – report Hadoop 进入安全模式：hdfs dfsadmin -safemode enter 
+- 检查 HDFS 状态，包括 DataNode 信息： hdfs dfsadmin – report
+- Hadoop 进入安全模式：hdfs dfsadmin -safemode enter
 - Hadoop 离开安全模式： hdfs dfsadmin -safemode leave
 - 平衡集群中的文件： sbin/start-balancer.sh
 
@@ -997,4 +1007,5 @@ HDFS 采用Master/Slave的架构来存储数据，该架构主要由四个部分
   }
   ```
 
-  
+
+

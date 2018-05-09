@@ -22,7 +22,7 @@
 **Hadoop** 框架的核心是 ***HDFS, MapReduce, Yarn***
 - **HDFS** 是分布式文件系统，提供海量数据的存储
 - **MapReduce** 是分布式数据处理模型，提供数据计算
-- **Yarn **是资源管理和调度工具
+- **Yarn** 是资源管理和调度工具
 
 Hadoop安装模式：
 
@@ -46,7 +46,7 @@ Hadoop安装模式：
 
 - **Spark** 内存计算、流式计算、图计算
 
-- **Sqoop** 从关系数据库导入数据到Hadoop，并可 直接导入到HDFS或Hive
+- **Sqoop** 从关系数据库导入数据到Hadoop，并可直接导入到HDFS或Hive
 
 - **Flume** 将流数据或日志数据导入HDFS
 
@@ -108,7 +108,7 @@ Hadoop安装模式：
 #### Input
 
 - HDFS 中的数据以 **Split** 方式作为 MapReduce 的 输入（Mapper 的个数由 Split 数目确定）
-- 通常1个 Split 对应1个 **Block** (HDFS 术语)，也可能对应多个Block，具 体是由 InputFormat 和压缩格式决定的
+- 通常1个 Split 对应1个 **Block** (HDFS 术语)，也可能对应多个Block，具体是由 InputFormat 和压缩格式决定的
 
 #### Map Task
 
@@ -913,7 +913,7 @@ HDFS 采用Master/Slave的架构来存储数据，该架构主要由四个部分
 
 - 创建文件夹：hdfs dfs -mkdir /log/20161001 
 
-- 上传文件或目录：hdfs dfs -put log.txt /log/20161001/ 或hdfs dfs -copyFromLocal log.txt /log/20161001/
+- 上传文件或目录：hdfs dfs -put log.txt /log/20161001/ 或 hdfs dfs -copyFromLocal log.txt /log/20161001/
 
 - 显示目录下的文件： hdfs dfs -ls /log/20161001/ 
 

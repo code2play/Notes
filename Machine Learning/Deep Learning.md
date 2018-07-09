@@ -11,6 +11,8 @@ A^l = g(Z^l) \\
 \mathcal{L} = \frac{1}{m} \sum_{i=1}^m y_ilog\hat{y_i} + (1-y_i)log(1-\hat{y}_i)
 $$
 
+其中$g(x)$为激活函数。
+
 ### Backward Propagation
 
 $$
@@ -43,39 +45,43 @@ $$
   - 正则化
   - 换模型
 
+### 正则化
+
+减少过拟合
+
+#### L2 Regularization
+
+$$
+J = -\frac{1}{m} \sum\limits_{i = 1}^{m} \large{(}\small  y^{(i)}\log\left(a^{[L](i)}\right) + (1-y^{(i)})\log\left(1- a^{[L](i)}\right) \large{)}
+$$
+To:
+$$
+J_{regularized} = \small \underbrace{-\frac{1}{m} \sum\limits_{i = 1}^{m} \large{(}\small y^{(i)}\log\left(a^{[L](i)}\right) + (1-y^{(i)})\log\left(1- a^{[L](i)}\right) \large{)} }_\text{cross-entropy cost} + \underbrace{\frac{1}{m} \frac{\lambda}{2} \sum\limits_l\sum\limits_k\sum\limits_j W_{k,j}^{[l]2} }_\text{L2 regularization cost}
+$$
+
+The regularization term's gradient is 
+$$
+\frac{d}{dW} ( \frac{1}{2}\frac{\lambda}{m}  W^2) = \frac{\lambda}{m} W
+$$
+
+#### 数据集增强
+
+- 图像可以水平翻转、旋转、裁剪等
+- 在输入层注入噪声（但神经网络对噪声不够鲁棒，Dropout可看作与噪声相乘重建输入）
+
+#### Early Stopping
+
+在训练误差增大前停止训练
+
+#### Dropout
+
+使用Bagging的方法集成DNN模型可以提高模型的鲁棒性，但训练开销太大
+
+Dropout提供了一种廉价的Bagging集成近似，方法是随机从网络中去除一些非输出单元形成子网络
+
 ### 优化算法
 
-#### 正则化
-
-- **L2 Regularization**
-
-  The standard way to avoid overfitting is called **L2 regularization**. It consists of appropriately modifying your cost function, from:
-  $$
-  J = -\frac{1}{m} \sum\limits_{i = 1}^{m} \large{(}\small  y^{(i)}\log\left(a^{[L](i)}\right) + (1-y^{(i)})\log\left(1- a^{[L](i)}\right) \large{)}
-  $$
-  To:
-  $$
-  J_{regularized} = \small \underbrace{-\frac{1}{m} \sum\limits_{i = 1}^{m} \large{(}\small y^{(i)}\log\left(a^{[L](i)}\right) + (1-y^{(i)})\log\left(1- a^{[L](i)}\right) \large{)} }_\text{cross-entropy cost} + \underbrace{\frac{1}{m} \frac{\lambda}{2} \sum\limits_l\sum\limits_k\sum\limits_j W_{k,j}^{[l]2} }_\text{L2 regularization cost}
-  $$
-
-  The regularization term's gradient is 
-  $$
-  \frac{d}{dW} ( \frac{1}{2}\frac{\lambda}{m}  W^2) = \frac{\lambda}{m} W
-  $$
-
-- **Dropout**: randomly shuts down some neurons in each iteration (see videos from Section2)
-
-
-#### 标准化 (z-score, min-max)
-
-#### Batch Norm
-
-$$
-Z_{norm}^{[l]}=\frac{Z^{[l]}-\mu}{\sqrt{\sigma^2+\epsilon}} \\
-\tilde{Z}^{[i]}=\gamma Z_{norm}^{[i]} + \beta \\
-A^{[i]} = W^{[i]}\tilde{Z}^{[i]} + b
-$$
-$\gamma, \beta​$ 分别为标准差和平均值，$\gamma=\sqrt{\sigma^2+\epsilon}, \beta=\mu​$ 时 $\tilde{Z}^{[i]} = Z^{[i]}​$
+加速训练
 
 #### Mini-Batch Gradient descent
 
@@ -87,7 +93,27 @@ batch-size = 1 时变为随机梯度下降
 
 #### Momentum (动量梯度下降)
 
-减少梯度在波动方向的值
+##### 指数加权平均
+
+$$
+v_{t} = \beta v_{t-1}+(1-\beta)\theta_t
+$$
+
+相当于对前$\frac{1}{1-\beta}$个数据平均（$(1-\beta)^{1/\beta}=\frac{1}{e}$）
+
+修正的指数加权平均：
+$$
+v_t^{corrected}=\frac{v_t}{1-\beta ^{t}}
+$$
+解决了初始状态偏差较大的问题
+
+<img src="images/Exp Average.jpg" style="width:800px">
+
+图中紫色曲线为未修正的指数加权平均，绿色曲线为修正后的指数加权平均
+
+##### Momentum
+
+减少梯度在波动方向的值（波动较大的方向将被抵消）
 
 <img src="images/Momentum.png" style="width:800px">
 $$
@@ -98,23 +124,24 @@ $$
 
 #### RMSprop
 
+抵消波动较大的方向，同时加速向最优解的移动速度（平方）
 $$
 s_{dW^{[l]}} = \beta s_{dW^{[l]}} + (1 - \beta) (\frac{\partial \mathcal{J} }{\partial W^{[l]} })^2 \\
 s^{corrected}_{dW^{[l]}} = \frac{s_{dW^{[l]}}}{1 - (\beta)^t} \\
-W^{[l]} = W^{[l]} - \alpha \frac{dW^{[l]}}{\sqrt{s_{dW^{[l]}} + \epsilon}}
+W^{[l]} = W^{[l]} - \alpha \frac{dW^{[l]}}{\sqrt{s_{dW^{[l]}}} + \epsilon}
 $$
 
-#### Adam
+其中$\epsilon$是一个很小的常数，用于防止分母为$0$的情况发生
+
+#### Adam (Adaptive Moments)
 
 Momentum + RMSprop
 $$
-\begin{cases}
 v_{dW^{[l]}} = \beta_1 v_{dW^{[l]}} + (1 - \beta_1) \frac{\partial \mathcal{J} }{ \partial W^{[l]} } \\
 v^{corrected}_{dW^{[l]}} = \frac{v_{dW^{[l]}}}{1 - (\beta_1)^t} \\
 s_{dW^{[l]}} = \beta_2 s_{dW^{[l]}} + (1 - \beta_2) (\frac{\partial \mathcal{J} }{\partial W^{[l]} })^2 \\
 s^{corrected}_{dW^{[l]}} = \frac{s_{dW^{[l]}}}{1 - (\beta_2)^t} \\
 W^{[l]} = W^{[l]} - \alpha \frac{v^{corrected}_{dW^{[l]}}}{\sqrt{s^{corrected}_{dW^{[l]}}} + \varepsilon}
-\end{cases}
 $$
 
 #### 学习率衰减
@@ -126,6 +153,17 @@ $$
 $$
 
 或者使用离散的 $\alpha$
+
+#### Batch Normalization
+
+$$
+Z_{norm}^{[l]}=\frac{Z^{[l]}-\mu}{\sqrt{\sigma^2+\epsilon}} \\
+\tilde{Z}^{[i]}=\gamma Z_{norm}^{[i]} + \beta \\
+A^{[i]} = W^{[i]}\tilde{Z}^{[i]} + b
+$$
+其中 $\gamma, \beta$ 也是可以学习（反向传播）的变量，分别表示标准差和平均值，当$\gamma=\sqrt{\sigma^2+\epsilon}, \beta=\mu$ 时 $\tilde{Z}^{[i]} = Z^{[i]}$
+
+批标准化防止了均值和方差反复变化导致的训练慢的问题，同时引入了一些噪声，有一定的正则化效果
 
 ### 调参
 

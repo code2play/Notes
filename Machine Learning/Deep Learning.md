@@ -249,14 +249,20 @@ $$
 <img src="images/Convolution_schematic.gif" style="width:500px">
 $$
 a^l = g(a^{l-1} * f^l + b^l) \\
-a^l.shape = \lfloor \frac{n^{[l-1]}_H+2p-f^l}{s^l} \rfloor \times  \lfloor \frac{n^{[l-1]}_W+2p-f^l}{s^l} \rfloor \times f^l_c
+a^l.shape = \lfloor \frac{n^{l-1}_H+2p^l-f^l}{s^l} +1 \rfloor \times  \lfloor \frac{n^{l-1}_W+2p^l-f^l}{s^l} +1 \rfloor \times f^l_c
 $$
 
-一般 $h$ 和 $w$ 越来越小，$f^l_c$ 越来越大
+其中$g(x)$为激活函数，$f_c$表示filter的个数，一般$n_H$和$n_W$越来越小，$f^l_c$越来越大。
+
+Padding:
+
+- Valid: $p=0$，即不使用填充，舍弃不能卷积的位置
+
+- Same: $p=(f-1)/2, a^l.shape=a^{l-1}.shape/s^l$
 
 Advantages:
 
-- 参数共享 (Parameter sharing): A feature detector that's useful in one part of the image is  probably useflu in another part
+- 参数共享 (Parameter sharing): A feature detector that's useful in one part of the image is  probably useful in another part
 - 稀疏连接 (Sparsity of connections): In each layer, each output value depends only on a small number of inputs
 
 #### Pooling Layer

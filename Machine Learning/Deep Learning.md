@@ -85,7 +85,7 @@ Dropout提供了一种廉价的Bagging集成近似，方法是随机从网络中
 
 #### Mini-Batch Gradient descent
 
-<img src="images/kiank_partition.png" style="width:900px">
+<img src="assets/kiank_partition.png" style="width:900px">
 
 batch-size = training set size 时变为 batch gradient desent 即普通的梯度下降
 
@@ -107,7 +107,7 @@ v_t^{corrected}=\frac{v_t}{1-\beta ^{t}}
 $$
 解决了初始状态偏差较大的问题
 
-<img src="images/Exp Average.jpg" style="width:800px">
+<img src="assets/Exp Average.jpg" style="width:800px">
 
 图中紫色曲线为未修正的指数加权平均，绿色曲线为修正后的指数加权平均
 
@@ -115,7 +115,7 @@ $$
 
 减少梯度在波动方向的值（波动较大的方向将被抵消）
 
-<img src="images/Momentum.png" style="width:800px">
+<img src="assets/Momentum.png" style="width:800px">
 $$
 v_{dW^{[l]}} = \beta v_{dW^{[l]}} + (1 - \beta) \frac{\partial \mathcal{J} }{ \partial W^{[l]} } \\
 v^{corrected}_{dW^{[l]}} = \frac{v_{dW^{[l]}}}{1 - (\beta)^t} \\
@@ -213,7 +213,7 @@ $$
 
 #### Error Analysis
 
-<img src="images/Errors.jpg" style="width:700px">
+<img src="assets/Errors.jpg" style="width:700px">
 
 ## 迁移学习
 
@@ -246,7 +246,7 @@ $$
 
 #### Convolutional Layer
 
-<img src="images/Convolution_schematic.gif" style="width:500px">
+<img src="assets/Convolution_schematic.gif" style="width:500px">
 $$
 a^l = g(a^{l-1} * f^l + b^l) \\
 a^l.shape = \lfloor \frac{n^{l-1}_H+2p^l-f^l}{s^l} +1 \rfloor \times  \lfloor \frac{n^{l-1}_W+2p^l-f^l}{s^l} +1 \rfloor \times f^l_c
@@ -269,7 +269,7 @@ Advantages:
 
 - Max Pooling
 
-<img src="images/max_pool.png" style="width:800px">
+<img src="assets/max_pool.png" style="width:800px">
 
 - Average Pooling
 
@@ -279,31 +279,31 @@ Advantages:
 
 #### LeNet-5
 
-<img src="images/LeNet-5.jpg" style="width:900px">
+<img src="assets/LeNet-5.jpg" style="width:900px">
 
 #### AlexNet
 
-<img src="images/AlexNet.jpg" style="width:900px">
+<img src="assets/AlexNet.jpg" style="width:900px">
 
 #### VGG-16
 
-<img src="images/VGG-16.jpg" style="width:900px">
+<img src="assets/VGG-16.jpg" style="width:900px">
 
 #### ResNet
 
 Residual block
 
-<img src="images/Residual block.jpg" style="width:900px">
+<img src="assets/Residual block.jpg" style="width:900px">
 
 ResNet
 
-<img src="images/ResNet.jpg" style="width:900px">
+<img src="assets/ResNet.jpg" style="width:900px">
 
 #### Inception Network
 
 $1\times 1$ Convolution layer 可以减小 c 从而降低计算成本
 
-<img src="images/Inception module.jpg" style="width:900px">
+<img src="assets/Inception module.jpg" style="width:900px">
 
 ### Data Augmentation
 
@@ -329,7 +329,7 @@ $1\times 1$ Convolution layer 可以减小 c 从而降低计算成本
 
 将CNN中的全连接层换成 $1 \times 1$ 的卷积层即可高效得计算出每个窗口的预测结果
 
-<img src="images/Convolution implementation of sliding windows.jpg" style="width:900px">
+<img src="assets/Convolution implementation of sliding windows.jpg" style="width:900px">
 
 #### YOLO (You Only Look Once)
 
@@ -363,11 +363,11 @@ Faster R-CNN: 利用卷积选出区域
 
 #### One-shot Learning
 
-<img src="images/Similarity.jpg" style="width:700px">
+<img src="assets/Similarity.jpg" style="width:700px">
 
 #### Siamese Network
 
-<img src="images/Siamese.jpg" style="width:900px">
+<img src="assets/Siamese.jpg" style="width:900px">
 
 #### Triplet Loss
 
@@ -411,7 +411,7 @@ a^t = g_1(W_{ax}X^t + W_{aa}a^{t-1} + b_a) \\
 \mathcal{L} = \sum_{t=1}^T \mathcal{L^t(y^t, \hat{y}^t)}
 $$
 
-<img src="images/RNN cell.png">
+<img src="assets/RNN cell.png">
 
 ### Backward Propagation Through Time (BPTT)
 
@@ -419,11 +419,11 @@ $$
 \frac{\partial \mathcal{L}}{\partial W_{ax}} = \frac{\partial \mathcal{L}^t}{\partial W_{ax}} \cdot \frac{\partial}{\partial W_{ax}}\sum_{i=t+1}^T\mathcal{L^i}
 $$
 
-<img src="images/RNN cell backprop.png">
+<img src="assets/RNN cell backprop.png">
 
 ### Architectures
 
-<img src="images/RNN Architectures.jpg" style="width:1000px">
+<img src="assets/RNN Architectures.jpg" style="width:1000px">
 
 #### Language Model
 
@@ -431,13 +431,13 @@ $$
 
 #### GRU
 
-<img src="images/GRU.jpg" style="width:800px">
+<img src="assets/GRU.jpg" style="width:800px">
 
-<img src="images/GRU intuition.jpg" style="width:800px">
+<img src="assets/GRU intuition.jpg" style="width:800px">
 
 #### LSTM
 
-<img src="images/LSTM.jpg" style="width:800px">
+<img src="assets/LSTM.jpg" style="width:800px">
 
 #### Bidirectional RNN
 
@@ -453,52 +453,13 @@ $$
   - GRU
   - LSTM
 
-### NLP (Word Embeddings)
-
-#### Word2Vec
-
-##### Skip-gram
-
-$$
-\text{maximize } J'(\theta) = \prod^T_{t=1} \prod_{\substack{-m\le j \le m \\ j \ne 0}} p(w_{t+j} | w_t, \theta) \\
-\text{i.e. minimize } J(\theta) = -\frac{1}{T} \sum^T_{t=1} \sum_{\substack{-m \le j \le m \\ j\ne 0}} log(p(w_{t+j} | w_t, \theta))
-$$
-
-其中 $\theta$ 为词向量，$T$ 为单词总数，$m$ 为窗口大小，$w_t$ 为 central word，$w_{t+j}$ 为 context word
-
-<img src="images/Word2Vec prob.jpg" style="width:500px">
-
-可以用分层 softmax 来加速 $p(o|c)$ 的计算
-
-<img src="images/Word2Vec theta.jpg" style="width:500px">
-
-如果用 SGD 训练，$\nabla_\theta J_t(\theta)$ 将会非常稀疏，导致效率低下
-
-<img src="images/Word2Vec SGD.jpg" style="width:350px">
-
-##### Negative Sampling
-
-$$
-J(\theta) = \frac{1}{T}\sum^T_{t=1}J_t(\theta) \\
-J_t(\theta) = log \sigma(u^T_ov_c) + \sum^k_{i=1} E_{j \thicksim P(w)} [log\sigma (-u^T_jv_c)] \\
-P(w) = \frac{U(w)^{3/4}}{Z}
-$$
-
-选取 k 个负样本（未出现的 center word 和 context word）
-
-##### CBOW
-
-#### GloVe
-
-####Sentiment Classification
-
 ### Machine Translation
 
 Encoder (RNN for text, CNN for image) -> Decoder (RNN) -> Language Model (Find the most likely translation)
 
 #### Beam Search
 
-<img src="images/Beam Search.jpg" style="width:900px">
+<img src="assets/Beam Search.jpg" style="width:900px">
 
 注意每次是从所有结果中选取可能性最大的 $B$ 个而不是在 in september, jane is, jane visits 里各选一个
 
@@ -506,7 +467,7 @@ Encoder (RNN for text, CNN for image) -> Decoder (RNN) -> Language Model (Find t
 
 Beam Search 不像 BFS, DFS 那样一定能找到最优解
 
-<img src="images/Error analysis on beam search.jpg" style="width:900px">
+<img src="assets/Error analysis on beam search.jpg" style="width:900px">
 
 #### Bleu Score
 
@@ -514,25 +475,25 @@ $$
 p_n = \frac{\sum_{ngram \in \hat{y}} count_{clip}(ngram)}{\sum_{ngram \in \hat{y}} count(ngram)}
 $$
 
-<img src="images/Bleu details.jpg" style="width:900px">
+<img src="assets/Bleu details.jpg" style="width:900px">
 
 BP = Brevity Penalty
 
 ### Attention Model
 
-<img src="images/Attention Model.jpg" style="width:1000px">
+<img src="assets/Attention Model.jpg" style="width:1000px">
 
-<img src="images/Computing attention.jpg" style="width:1000px">
+<img src="assets/Computing attention.jpg" style="width:1000px">
 
 ### Speech Recognition
 
 #### Attention model
 
-<img src="images/Attention model for speech recognition.jpg" style="width:900px">
+<img src="assets/Attention model for speech recognition.jpg" style="width:900px">
 
 #### CTC
 
-<img src="images/CTC.jpg" style="width:900px">
+<img src="assets/CTC.jpg" style="width:900px">
 
 #### Neural Transducer
 
@@ -540,4 +501,4 @@ BP = Brevity Penalty
 
 ### Trigger Word Detection
 
-<img src="images/Trigger word detection.jpg" style="width:900px">
+<img src="assets/Trigger word detection.jpg" style="width:900px">

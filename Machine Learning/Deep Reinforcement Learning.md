@@ -17,7 +17,7 @@
 
 但是由于复合误差（compounding errors），训练结果往往有较大偏差。
 
-<img src="images/compounding errors.jpg" style="width:600px">
+<img src="assets/compounding errors.jpg" style="width:600px">
 
 有两个原因使得我们经常不能很好地学习专家行为：
 
@@ -131,7 +131,7 @@ $$
 
 ### Structure of RL Algorithms
 
-<img src="images/RL.jpg" style="width:500px">
+<img src="assets/RL.jpg" style="width:500px">
 
 ### Q Function & Value Function
 
@@ -170,7 +170,7 @@ $$
 - off-policy: 可以在不用现在的策略去生成新样本的情况下，就能改进我们的策略。其实就是能够使用其他策略生成过的历史遗留数据来使得现在的策略更优
 - on-policy: 算法指的是每次策略被更改，即便只改动了一点点，也需要去生成新的样本。在线算法用于梯度法通常会有一些问题，因为梯度算法经常会走梯度步，些许调整策略就得生成大量样本
 
-<img src="images/RL tradeoff.jpg" style="width:800px">
+<img src="assets/RL tradeoff.jpg" style="width:800px">
 
 **Note**: efficient $\ne$ running time
 

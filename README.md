@@ -5,9 +5,9 @@
 - Deep Learning
 - Hadoop
 - 算法与数据结构
+- 计算机网络
 
 ## TODO
 
 - [ ] Machine Learning
-- [ ] 计网
 - [ ] 操作系统

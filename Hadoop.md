@@ -103,7 +103,7 @@ Hadoop安装模式：
 
 ### 流程(以Word Count为例)
 
-![MR](images/MR.png)
+![MR](assets/MR.png)
 
 #### Input
 
@@ -837,7 +837,7 @@ public static class SemiJoinReducer extends Reducer<Text, Text, Text, Text> {
 
 HDFS 采用Master/Slave的架构来存储数据，该架构主要由四个部分组成
 
-![HDFS](images/HDFS.gif)
+![HDFS](assets/HDFS.gif)
 
 #### HDFS Client
 
